@@ -11,12 +11,16 @@ namespace SpeedTestLogger
         public readonly int LoggerId;
         public readonly RegionInfo LoggerLocation;
         public readonly Uri ApiUrl;
+        public readonly string ServiceBusConnectionString;
+        public readonly string ServiceBusTopic;
+        public readonly string ServiceBusSubscriptionName;
 
         public LoggerConfiguration()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Development.json");
 
             var configuration = builder.Build();
 
@@ -25,6 +29,11 @@ namespace SpeedTestLogger
             UserId = configuration["userId"];
             LoggerId = int.Parse(configuration["loggerId"]);
             ApiUrl = new Uri(configuration["speedTestApiUrl"]);
+
+            // service bus
+            ServiceBusConnectionString = configuration["ServiceBus:connectionString"];
+            ServiceBusTopic = configuration["ServiceBus:topicName"];
+            ServiceBusSubscriptionName = configuration["ServiceBus:subscriptionName"];
 
             Console.WriteLine("Logger located in {0}", LoggerLocation.EnglishName);
         }

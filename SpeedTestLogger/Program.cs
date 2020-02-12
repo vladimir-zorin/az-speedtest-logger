@@ -1,6 +1,6 @@
 ﻿using SpeedTestLogger.Models;
+using SpeedTestLogger.Services;
 using System;
-using System.Globalization;
 using System.Threading.Tasks;
 
 namespace SpeedTestLogger
@@ -12,6 +12,13 @@ namespace SpeedTestLogger
             Console.WriteLine("Hello SpeedTestLogger!");
 
             var config = new LoggerConfiguration();
+
+            var serviceBusListener = new ServiceBusListener(config);
+            await serviceBusListener.Listen(async (msg) => await DoWork(config));
+        }
+
+        private static async Task DoWork(LoggerConfiguration config)
+        {
             var runner = new SpeedTestRunner(config.LoggerLocation);
             var testData = runner.RunSpeedTest();
             var results = new TestResult
